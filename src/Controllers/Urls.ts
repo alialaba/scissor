@@ -15,12 +15,12 @@ export const  shortenUrl = async (req,res, next)=>{
 
     const {originalUrl} = req.body;
     const base = "http://localhost:3000";
-    const urlowner = await 
 
     const urlId = nanoid(5);
     if(validateUrl(originalUrl)){
 
         try {
+            let user = await User.findOne({_id:req.user._id})
             let url = await Url.findOne({originalUrl});
             if(url){
                 res.status(201).json({success:true, url})
@@ -31,7 +31,9 @@ export const  shortenUrl = async (req,res, next)=>{
                 shortUrl,
                 urlId,
                 date: new Date(),
+                user
               });
+            //   (urlid, origUrl, short url, User
 
               await url.save();
               res.status(201).json({success:true, url})
