@@ -15,28 +15,37 @@ export const  shortenUrl = async (req,res, next)=>{
 
     const {originalUrl} = req.body;
     const base = "http://localhost:3000";
+    // console.log(req.user)
 
     const urlId = nanoid(5);
     if(validateUrl(originalUrl)){
-
+       
         try {
-            let user = await User.findOne({_id:req.user._id})
+            // console.log("seen" , user)
             let url = await Url.findOne({originalUrl});
             if(url){
                 res.status(201).json({success:true, url})
             }else{
+                let user = await User.findOne({ _id: req.user._id })
                 const shortUrl = `${base}/${urlId}`;
-            url = new Url({
+            
+            console.log(user._id)
+          let newShortenUrl = await Url.create({
                 originalUrl,
                 shortUrl,
                 urlId,
                 date: new Date(),
-                user
-              });
-            //   (urlid, origUrl, short url, User
+               owner: user._id
+            })
+            // console.log("new datas", newShortenUrl)
 
-              await url.save();
-              res.status(201).json({success:true, url})
+          let savedUrl =  await newShortenUrl.save();
+        
+          //save shortenurl to the owner 
+          user.urls= user.urls.concat(savedUrl.shortUrl)
+          await user.save()
+
+              res.status(201).json({success:true, newShortenUrl})
 
             }
             
@@ -59,11 +68,21 @@ export const  shortenUrl = async (req,res, next)=>{
 export const redirectUrl = async (req,res, next)=>{
 
     try {
-        const url = Url.findOne({urlId: req.params.urlId});
+        const url = await Url.findOne({urlId: req.params.urlId});
 
         if(url){
             await Url.updateOne({urlId:req.params.urlId}, {$inc: {clicks: 1}});
-            return res.redirect((await url).originalUrl);
+            // return res.redirect((await url).originalUrl);
+
+
+        let user = await User.findOne({ _id: req.user._id })
+             // Check if the owner of the URL matches the authenticated user
+        if (user && user.urls.includes(url.shortUrl)){
+             return res.redirect(url.originalUrl);
+         } else {
+        // If the user is not the owner, return an error or handle it accordingly
+            return next(new ErrorResponse("Unauthorized User", 401));
+        }
         }else{
             // res.status(404).json("Not Found")
             return next(new ErrorResponse("Not Found", 404));

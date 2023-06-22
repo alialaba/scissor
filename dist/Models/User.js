@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import mongoose, { model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 const UserSchema = new Schema({
@@ -20,7 +20,7 @@ const UserSchema = new Schema({
     },
     urls: [
         {
-            type: mongoose.Types.ObjectId,
+            type: String,
             ref: "urls"
         }
     ]
@@ -47,6 +47,6 @@ UserSchema.methods.getSignedToken = function () {
     //jwt: accept payload && secretOrprivatekey && options
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
 };
-const UserModel = model("User", UserSchema);
+const UserModel = model("users", UserSchema);
 export default UserModel;
 //# sourceMappingURL=User.js.map

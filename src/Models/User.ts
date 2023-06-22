@@ -10,7 +10,7 @@ interface User {
     fullname: string;
     email: string;
     password: string;
-    urls:any;
+    urls:string[];
     isValidPassword(password: string): Promise<boolean>;
     
 }
@@ -35,7 +35,7 @@ const UserSchema = new Schema<User>({
     },
     urls:[
         {
-            type: mongoose.Types.ObjectId,
+            type: String,
             ref:"urls"
         }
     ]
@@ -73,5 +73,5 @@ UserSchema.methods.getSignedToken = function(){
  return jwt.sign({id: this._id}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRE})
 }
 
-const UserModel = model<User>("User", UserSchema);
+const UserModel = model<User>("users", UserSchema);
 export  default UserModel;

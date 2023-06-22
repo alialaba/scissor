@@ -1,4 +1,4 @@
-import mongoose , {Schema,  model} from "mongoose";
+import mongoose , { Types, Schema,  model} from "mongoose";
 
 // import  UserDocument  from "./User.js";
 interface Url {
@@ -7,7 +7,7 @@ interface Url {
     shortUrl: string;
     clicks: number;
     date: Date;
-    owner: any; 
+    owner: { type: mongoose.Types.ObjectId, ref: "User" };
     // owner: Document["_id"];
 }
 
@@ -34,8 +34,10 @@ const UrlSchema = new Schema<Url>({
         type: Date,
         default: Date.now,
     },
-    owner:{type: mongoose.Types.ObjectId,
-        ref: "User"},
+    owner:{
+        type: mongoose.Types.ObjectId,
+        ref: "users"
+    }
 
 })
 

@@ -21,8 +21,10 @@ const UrlSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    owner: { type: mongoose.Types.ObjectId,
-        ref: "User" },
+    owner: {
+        type: mongoose.Types.ObjectId,
+        ref: "users"
+    }
 });
 const UrlModel = model("urls", UrlSchema);
 export default UrlModel;
