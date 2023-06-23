@@ -5,7 +5,7 @@ import connectDB from "./config/db.js";
 
 import urlsRouter from "./Routes/Urls.js";
 import authRoute from "./Routes/Auth.js";
-import errorHandler from "./middleware/error.js";
+import errorHandler from "./middlewares/error.js";
 import cors from "cors";
 // import { protect } from './middleware/auth.js';
 
