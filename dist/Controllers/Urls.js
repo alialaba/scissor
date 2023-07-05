@@ -62,7 +62,7 @@ export const redirectUrl = async (req, res, next) => {
             }
             else {
                 // If the user is not the owner, return an error or handle it accordingly
-                return next(new ErrorResponse("Unauthorized", 401));
+                return next(new ErrorResponse("Unauthorized User", 401));
             }
         }
         else {
